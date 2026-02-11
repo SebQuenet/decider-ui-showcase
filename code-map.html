@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Map - Chat UI Showcase</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    grid-template-rows: 1fr auto;
+    height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    grid-row: 1 / 3;
+    background: #161822;
+    border-right: 1px solid #2a2d3a;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .sidebar h2 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    margin-bottom: 10px;
+    margin-top: 18px;
+  }
+
+  .sidebar h2:first-child { margin-top: 0; }
+
+  .title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #2a2d3a;
+  }
+
+  .subtitle {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 16px;
+  }
+
+  /* Presets */
+  .preset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .preset-btn {
+    background: #1e2030;
+    border: 1px solid #2a2d3a;
+    color: #94a3b8;
+    font-size: 11px;
+    padding: 7px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .preset-btn:hover { border-color: #475569; color: #e2e8f0; }
+  .preset-btn.active { border-color: #3b82f6; color: #60a5fa; background: #1e293b; }
+
+  /* Checkboxes */
+  .check-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.1s;
+  }
+
+  .check-item:hover { background: #1e2030; }
+
+  .check-item input[type="checkbox"] {
+    accent-color: #3b82f6;
+    width: 14px;
+    height: 14px;
+  }
+
+  .color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* Comments */
+  .comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .comment-item {
+    background: #1e2030;
+    border: 1px solid #2a2d3a;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 11px;
+    position: relative;
+  }
+
+  .comment-target {
+    font-weight: 600;
+    color: #60a5fa;
+    font-size: 11px;
+  }
+
+  .comment-file {
+    color: #64748b;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 10px;
+    margin-top: 1px;
+  }
+
+  .comment-text {
+    color: #cbd5e1;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .comment-delete {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: none;
+    border: none;
+    color: #475569;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 2px;
+  }
+
+  .comment-delete:hover { color: #ef4444; }
+
+  .no-comments {
+    font-size: 11px;
+    color: #475569;
+    font-style: italic;
+    padding: 4px 0;
+  }
+
+  /* Canvas area */
+  .canvas-area {
+    position: relative;
+    overflow: hidden;
+    background: #0f1117;
+  }
+
+  .canvas-area svg {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+  }
+
+  .canvas-area svg:active { cursor: grabbing; }
+
+  /* Zoom controls */
+  .zoom-controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 4px;
+  }
+
+  .zoom-btn {
+    background: #1e2030;
+    border: 1px solid #2a2d3a;
+    color: #94a3b8;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .zoom-btn:hover { border-color: #475569; color: #e2e8f0; }
+
+  /* Legend */
+  .legend {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: #161822ee;
+    border: 1px solid #2a2d3a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    gap: 16px;
+    font-size: 11px;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 6px; color: #94a3b8; }
+
+  .legend-line {
+    width: 24px;
+    height: 2px;
+    border-radius: 1px;
+  }
+
+  .legend-line.dashed {
+    background: repeating-linear-gradient(90deg, currentColor 0, currentColor 6px, transparent 6px, transparent 10px);
+    height: 2px;
+  }
+
+  .legend-line.dotted {
+    background: repeating-linear-gradient(90deg, currentColor 0, currentColor 3px, transparent 3px, transparent 7px);
+    height: 2px;
+  }
+
+  /* Prompt area */
+  .prompt-area {
+    background: #161822;
+    border-top: 1px solid #2a2d3a;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 200px;
+  }
+
+  .prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .prompt-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+  }
+
+  .copy-btn {
+    background: #1e2030;
+    border: 1px solid #2a2d3a;
+    color: #94a3b8;
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .copy-btn:hover { border-color: #475569; color: #e2e8f0; }
+  .copy-btn.copied { border-color: #10b981; color: #10b981; }
+
+  .prompt-text {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #cbd5e1;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    max-height: 120px;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000000aa;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: #1e2030;
+    border: 1px solid #2a2d3a;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px;
+    max-width: 90vw;
+  }
+
+  .modal h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #f1f5f9;
+    margin-bottom: 2px;
+  }
+
+  .modal .modal-file {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 12px;
+  }
+
+  .modal textarea {
+    width: 100%;
+    background: #0f1117;
+    border: 1px solid #2a2d3a;
+    color: #e2e8f0;
+    font-family: inherit;
+    font-size: 13px;
+    padding: 10px;
+    border-radius: 6px;
+    resize: vertical;
+    min-height: 80px;
+    outline: none;
+  }
+
+  .modal textarea:focus { border-color: #3b82f6; }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .modal-btn {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #2a2d3a;
+    transition: all 0.15s;
+  }
+
+  .modal-btn.cancel {
+    background: transparent;
+    color: #94a3b8;
+  }
+
+  .modal-btn.cancel:hover { border-color: #475569; }
+
+  .modal-btn.save {
+    background: #3b82f6;
+    border-color: #3b82f6;
+    color: #fff;
+  }
+
+  .modal-btn.save:hover { background: #2563eb; }
+
+  /* SVG node styles */
+  .node-group { cursor: pointer; }
+  .node-group:hover .node-rect { filter: brightness(1.15); }
+  .node-rect { transition: filter 0.15s; }
+  .node-label { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+  .node-sublabel { font-family: 'SF Mono', 'Fira Code', monospace; }
+  .conn-path { fill: none; transition: opacity 0.2s; }
+
+  /* Stats bar */
+  .stats {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: #64748b;
+  }
+
+  .stat-value { color: #94a3b8; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="title">Chat UI Showcase</div>
+
+    <h2>Vues</h2>
+    <div class="preset-grid" id="presets"></div>
+
+    <h2>Couches</h2>
+    <div class="check-group" id="layers"></div>
+
+    <h2>Connexions</h2>
+    <div class="check-group" id="conn-filters"></div>
+
+    <h2>Commentaires <span id="comment-count" style="color:#64748b">(0)</span></h2>
+    <div class="comments-list" id="comments-list">
+      <div class="no-comments">Cliquer un composant pour commenter</div>
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-area" id="canvas-area">
+    <svg id="canvas" viewBox="0 0 960 640"></svg>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="zoomIn()">+</button>
+      <button class="zoom-btn" onclick="zoomOut()">&minus;</button>
+      <button class="zoom-btn" onclick="zoomReset()" style="font-size:11px">1:1</button>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-line" style="background:#3b82f6"></div> Render
+      </div>
+      <div class="legend-item">
+        <div class="legend-line dashed" style="color:#10b981"></div> Import util
+      </div>
+      <div class="legend-item">
+        <div class="legend-line dotted" style="color:#6b7280"></div> Import type
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt -->
+  <div class="prompt-area">
+    <div class="prompt-header">
+      <span class="prompt-label">Prompt</span>
+      <button class="copy-btn" id="copy-btn" onclick="copyPrompt()">Copier</button>
+    </div>
+    <div class="prompt-text" id="prompt-text">Aucun commentaire. Cliquer un composant sur le diagramme pour ajouter du feedback.</div>
+  </div>
+</div>
+
+<!-- Comment modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modal-title"></h3>
+    <div class="modal-file" id="modal-file"></div>
+    <textarea id="modal-input" placeholder="Votre commentaire sur ce composant..."></textarea>
+    <div class="modal-actions">
+      <button class="modal-btn cancel" onclick="closeModal()">Annuler</button>
+      <button class="modal-btn save" onclick="saveComment()">Ajouter</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Data ────────────────────────────────────────────────────────────────
+
+const LAYERS = {
+  entry:      { label: 'Point d\'entree',    color: '#fef3c7', text: '#92400e', border: '#f59e0b' },
+  app:        { label: 'Application',         color: '#dbeafe', text: '#1e40af', border: '#3b82f6' },
+  navigation: { label: 'Navigation',          color: '#e0e7ff', text: '#3730a3', border: '#6366f1' },
+  experiment: { label: 'Experimentations',    color: '#dcfce7', text: '#166534', border: '#22c55e' },
+  chat:       { label: 'Composants Chat',     color: '#fce7f3', text: '#9d174d', border: '#ec4899' },
+  types:      { label: 'Types',               color: '#f3e8ff', text: '#6b21a8', border: '#a855f7' },
+  lib:        { label: 'Utilitaires',         color: '#ffedd5', text: '#9a3412', border: '#f97316' },
+};
+
+const CONN_TYPES = {
+  render:      { label: 'Render',       color: '#3b82f6', dash: '' },
+  'import-util': { label: 'Import util',  color: '#10b981', dash: '6,3' },
+  'import-type': { label: 'Import type',  color: '#6b7280', dash: '3,5' },
+};
+
+const nodes = [
+  { id: 'main',             label: 'main.tsx',            subtitle: 'src/main.tsx',                          x: 460, y: 35,  w: 130, h: 44, layer: 'entry',      lines: 10 },
+  { id: 'app',              label: 'App',                 subtitle: 'src/App.tsx',                           x: 460, y: 125, w: 130, h: 44, layer: 'app',        lines: 40 },
+  { id: 'tab-nav',          label: 'TabNavigation',       subtitle: 'src/components/TabNavigation.tsx',      x: 240, y: 225, w: 155, h: 44, layer: 'navigation', lines: 36 },
+  { id: 'demo-chat',        label: 'DemoChat',            subtitle: 'src/experiments/DemoChat.tsx',          x: 620, y: 225, w: 145, h: 44, layer: 'experiment', lines: 51 },
+  { id: 'chat-container',   label: 'ChatContainer',       subtitle: 'src/components/chat/ChatContainer.tsx', x: 620, y: 325, w: 155, h: 44, layer: 'chat',       lines: 35 },
+  { id: 'message-bubble',   label: 'MessageBubble',       subtitle: 'src/components/chat/MessageBubble.tsx', x: 440, y: 425, w: 160, h: 44, layer: 'chat',       lines: 32 },
+  { id: 'typing-indicator',  label: 'TypingIndicator',     subtitle: 'src/components/chat/TypingIndicator.tsx', x: 640, y: 425, w: 165, h: 44, layer: 'chat',    lines: 26 },
+  { id: 'chat-input',       label: 'ChatInput',           subtitle: 'src/components/chat/ChatInput.tsx',     x: 840, y: 425, w: 135, h: 44, layer: 'chat',       lines: 71 },
+  { id: 'animations',       label: 'animations',          subtitle: 'src/lib/animations.ts',                 x: 700, y: 545, w: 140, h: 44, layer: 'lib',        lines: 51 },
+  { id: 'chat-types',       label: 'chat.ts',             subtitle: 'src/types/chat.ts',                     x: 460, y: 545, w: 120, h: 44, layer: 'types',      lines: 14 },
+  { id: 'nav-types',        label: 'navigation.ts',       subtitle: 'src/types/navigation.ts',               x: 220, y: 545, w: 145, h: 44, layer: 'types',      lines: 5 },
+];
+
+const connections = [
+  // Render relationships
+  { from: 'main',           to: 'app',              type: 'render',      label: 'renders' },
+  { from: 'app',            to: 'tab-nav',          type: 'render',      label: 'renders' },
+  { from: 'app',            to: 'demo-chat',        type: 'render',      label: 'renders' },
+  { from: 'demo-chat',      to: 'chat-container',   type: 'render',      label: 'renders' },
+  { from: 'chat-container', to: 'message-bubble',   type: 'render',      label: 'renders' },
+  { from: 'chat-container', to: 'typing-indicator',  type: 'render',      label: 'renders' },
+  { from: 'chat-container', to: 'chat-input',       type: 'render',      label: 'renders' },
+
+  // Type imports
+  { from: 'app',            to: 'nav-types',        type: 'import-type', label: 'TabView' },
+  { from: 'tab-nav',        to: 'nav-types',        type: 'import-type', label: 'TabView' },
+  { from: 'demo-chat',      to: 'chat-types',       type: 'import-type', label: 'Message' },
+  { from: 'message-bubble', to: 'chat-types',       type: 'import-type', label: 'Message' },
+
+  // Utility imports
+  { from: 'chat-input',      to: 'animations',      type: 'import-util', label: 'fadeInUp' },
+  { from: 'message-bubble',  to: 'animations',      type: 'import-util', label: 'messageVariants' },
+  { from: 'typing-indicator', to: 'animations',      type: 'import-util', label: 'typingDotVariants' },
+];
+
+// ── State ───────────────────────────────────────────────────────────────
+
+const PRESETS = {
+  'full':       { label: 'Systeme complet',  layers: Object.keys(LAYERS), conns: Object.keys(CONN_TYPES) },
+  'ui':         { label: 'Composants UI',    layers: ['navigation', 'experiment', 'chat'], conns: ['render'] },
+  'data-flow':  { label: 'Flux de donnees',  layers: ['app', 'experiment', 'chat', 'types'], conns: ['render', 'import-type'] },
+  'animations': { label: 'Animations',       layers: ['chat', 'lib'], conns: ['import-util'] },
+};
+
+const state = {
+  layers: Object.fromEntries(Object.keys(LAYERS).map(k => [k, true])),
+  conns: Object.fromEntries(Object.keys(CONN_TYPES).map(k => [k, true])),
+  activePreset: 'full',
+  comments: [],
+  zoom: 1,
+  panX: 0,
+  panY: 0,
+  modalNodeId: null,
+};
+
+// ── Render controls ─────────────────────────────────────────────────────
+
+function renderPresets() {
+  const container = document.getElementById('presets');
+  container.innerHTML = '';
+  for (const [id, preset] of Object.entries(PRESETS)) {
+    const btn = document.createElement('button');
+    btn.className = `preset-btn${state.activePreset === id ? ' active' : ''}`;
+    btn.textContent = preset.label;
+    btn.onclick = () => applyPreset(id);
+    container.appendChild(btn);
+  }
+}
+
+function renderLayerFilters() {
+  const container = document.getElementById('layers');
+  container.innerHTML = '';
+  for (const [id, layer] of Object.entries(LAYERS)) {
+    const label = document.createElement('label');
+    label.className = 'check-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = state.layers[id];
+    cb.onchange = () => { state.layers[id] = cb.checked; state.activePreset = null; updateAll(); };
+    const dot = document.createElement('span');
+    dot.className = 'color-dot';
+    dot.style.background = layer.border;
+    label.append(cb, dot, document.createTextNode(' ' + layer.label));
+    container.appendChild(label);
+  }
+}
+
+function renderConnFilters() {
+  const container = document.getElementById('conn-filters');
+  container.innerHTML = '';
+  for (const [id, ct] of Object.entries(CONN_TYPES)) {
+    const label = document.createElement('label');
+    label.className = 'check-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = state.conns[id];
+    cb.onchange = () => { state.conns[id] = cb.checked; state.activePreset = null; updateAll(); };
+    const dot = document.createElement('span');
+    dot.className = 'color-dot';
+    dot.style.background = ct.color;
+    label.append(cb, dot, document.createTextNode(' ' + ct.label));
+    container.appendChild(label);
+  }
+}
+
+// ── SVG rendering ───────────────────────────────────────────────────────
+
+function getNodeById(id) { return nodes.find(n => n.id === id); }
+
+function nodeCenter(n) { return { x: n.x + n.w / 2, y: n.y + n.h / 2 }; }
+
+function bezierPath(fromNode, toNode) {
+  const a = nodeCenter(fromNode);
+  const b = nodeCenter(toNode);
+  const dy = b.y - a.y;
+  const dx = b.x - a.x;
+
+  let startY, endY, cp1y, cp2y;
+
+  if (Math.abs(dy) > Math.abs(dx) * 0.4) {
+    // Mostly vertical
+    startY = dy > 0 ? fromNode.y + fromNode.h : fromNode.y;
+    endY = dy > 0 ? toNode.y : toNode.y + toNode.h;
+    const midY = (startY + endY) / 2;
+    return `M ${a.x} ${startY} C ${a.x} ${midY}, ${b.x} ${midY}, ${b.x} ${endY}`;
+  } else {
+    // Mostly horizontal
+    const startX = dx > 0 ? fromNode.x + fromNode.w : fromNode.x;
+    const endX = dx > 0 ? toNode.x : toNode.x + toNode.w;
+    const midX = (startX + endX) / 2;
+    return `M ${startX} ${a.y} C ${midX} ${a.y}, ${midX} ${b.y}, ${endX} ${b.y}`;
+  }
+}
+
+function renderDiagram() {
+  const svg = document.getElementById('canvas');
+  svg.innerHTML = '';
+
+  // Defs (arrowheads)
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  for (const [id, ct] of Object.entries(CONN_TYPES)) {
+    const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    marker.setAttribute('id', `arrow-${id}`);
+    marker.setAttribute('markerWidth', '8');
+    marker.setAttribute('markerHeight', '6');
+    marker.setAttribute('refX', '7');
+    marker.setAttribute('refY', '3');
+    marker.setAttribute('orient', 'auto');
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.setAttribute('points', '0 0, 8 3, 0 6');
+    poly.setAttribute('fill', ct.color);
+    marker.appendChild(poly);
+    defs.appendChild(marker);
+  }
+  svg.appendChild(defs);
+
+  // Transform group
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('transform', `translate(${state.panX},${state.panY}) scale(${state.zoom})`);
+  g.id = 'canvas-group';
+  svg.appendChild(g);
+
+  const visibleNodeIds = new Set(nodes.filter(n => state.layers[n.layer]).map(n => n.id));
+
+  // Draw connections
+  for (const conn of connections) {
+    if (!state.conns[conn.type]) continue;
+    if (!visibleNodeIds.has(conn.from) || !visibleNodeIds.has(conn.to)) continue;
+
+    const fromNode = getNodeById(conn.from);
+    const toNode = getNodeById(conn.to);
+    const ct = CONN_TYPES[conn.type];
+
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', bezierPath(fromNode, toNode));
+    path.setAttribute('stroke', ct.color);
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('fill', 'none');
+    path.setAttribute('marker-end', `url(#arrow-${conn.type})`);
+    path.setAttribute('opacity', '0.6');
+    if (ct.dash) path.setAttribute('stroke-dasharray', ct.dash);
+    path.classList.add('conn-path');
+    g.appendChild(path);
+
+    // Connection label
+    if (conn.label) {
+      const fc = nodeCenter(fromNode);
+      const tc = nodeCenter(toNode);
+      const lx = (fc.x + tc.x) / 2;
+      const ly = (fc.y + tc.y) / 2 - 6;
+      const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txt.setAttribute('x', lx);
+      txt.setAttribute('y', ly);
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('fill', ct.color);
+      txt.setAttribute('font-size', '9');
+      txt.setAttribute('font-family', "'SF Mono', 'Fira Code', monospace");
+      txt.setAttribute('opacity', '0.7');
+      txt.textContent = conn.label;
+      g.appendChild(txt);
+    }
+  }
+
+  // Draw nodes
+  for (const node of nodes) {
+    if (!visibleNodeIds.has(node.id)) continue;
+
+    const layer = LAYERS[node.layer];
+    const hasComment = state.comments.some(c => c.target === node.id);
+
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.classList.add('node-group');
+    group.onclick = () => openModal(node.id);
+
+    // Shadow
+    const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    shadow.setAttribute('x', node.x + 2);
+    shadow.setAttribute('y', node.y + 2);
+    shadow.setAttribute('width', node.w);
+    shadow.setAttribute('height', node.h);
+    shadow.setAttribute('rx', '8');
+    shadow.setAttribute('fill', '#00000030');
+    group.appendChild(shadow);
+
+    // Rect
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', node.x);
+    rect.setAttribute('y', node.y);
+    rect.setAttribute('width', node.w);
+    rect.setAttribute('height', node.h);
+    rect.setAttribute('rx', '8');
+    rect.setAttribute('fill', layer.color);
+    rect.setAttribute('stroke', hasComment ? '#f59e0b' : layer.border);
+    rect.setAttribute('stroke-width', hasComment ? '2.5' : '1');
+    rect.classList.add('node-rect');
+    group.appendChild(rect);
+
+    // Comment indicator
+    if (hasComment) {
+      const badge = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      badge.setAttribute('cx', node.x + node.w - 4);
+      badge.setAttribute('cy', node.y + 4);
+      badge.setAttribute('r', '6');
+      badge.setAttribute('fill', '#f59e0b');
+      group.appendChild(badge);
+
+      const badgeText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      badgeText.setAttribute('x', node.x + node.w - 4);
+      badgeText.setAttribute('y', node.y + 7.5);
+      badgeText.setAttribute('text-anchor', 'middle');
+      badgeText.setAttribute('fill', '#000');
+      badgeText.setAttribute('font-size', '8');
+      badgeText.setAttribute('font-weight', '700');
+      badgeText.textContent = state.comments.filter(c => c.target === node.id).length;
+      group.appendChild(badgeText);
+    }
+
+    // Label
+    const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', node.x + node.w / 2);
+    label.setAttribute('y', node.y + 18);
+    label.setAttribute('text-anchor', 'middle');
+    label.setAttribute('fill', layer.text);
+    label.setAttribute('font-size', '12');
+    label.setAttribute('font-weight', '600');
+    label.classList.add('node-label');
+    label.textContent = node.label;
+    group.appendChild(label);
+
+    // Subtitle
+    const sub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    sub.setAttribute('x', node.x + node.w / 2);
+    sub.setAttribute('y', node.y + 32);
+    sub.setAttribute('text-anchor', 'middle');
+    sub.setAttribute('fill', layer.text);
+    sub.setAttribute('font-size', '8.5');
+    sub.setAttribute('opacity', '0.65');
+    sub.classList.add('node-sublabel');
+    sub.textContent = node.subtitle.replace('src/', '');
+    group.appendChild(sub);
+
+    // Lines count
+    const linesText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    linesText.setAttribute('x', node.x + node.w - 8);
+    linesText.setAttribute('y', node.y + 18);
+    linesText.setAttribute('text-anchor', 'end');
+    linesText.setAttribute('fill', layer.text);
+    linesText.setAttribute('font-size', '8');
+    linesText.setAttribute('opacity', '0.4');
+    linesText.classList.add('node-sublabel');
+    linesText.textContent = `${node.lines}L`;
+    group.appendChild(linesText);
+
+    g.appendChild(group);
+  }
+
+  // Stats
+  const visibleCount = visibleNodeIds.size;
+  const visibleConns = connections.filter(c =>
+    state.conns[c.type] && visibleNodeIds.has(c.from) && visibleNodeIds.has(c.to)
+  ).length;
+  const totalLines = nodes.filter(n => visibleNodeIds.has(n.id)).reduce((s, n) => s + n.lines, 0);
+  document.getElementById('stats').innerHTML =
+    `<span><span class="stat-value">${visibleCount}</span> composants</span>` +
+    `<span><span class="stat-value">${visibleConns}</span> connexions</span>` +
+    `<span><span class="stat-value">${totalLines}</span> lignes</span>`;
+}
+
+// ── Zoom & Pan ──────────────────────────────────────────────────────────
+
+function zoomIn()    { state.zoom = Math.min(state.zoom * 1.2, 3); renderDiagram(); }
+function zoomOut()   { state.zoom = Math.max(state.zoom / 1.2, 0.3); renderDiagram(); }
+function zoomReset() { state.zoom = 1; state.panX = 0; state.panY = 0; renderDiagram(); }
+
+// Pan with mouse drag
+let isPanning = false, panStartX, panStartY;
+document.getElementById('canvas').addEventListener('mousedown', e => {
+  if (e.target.closest('.node-group')) return;
+  isPanning = true;
+  panStartX = e.clientX - state.panX;
+  panStartY = e.clientY - state.panY;
+});
+window.addEventListener('mousemove', e => {
+  if (!isPanning) return;
+  state.panX = e.clientX - panStartX;
+  state.panY = e.clientY - panStartY;
+  const g = document.getElementById('canvas-group');
+  if (g) g.setAttribute('transform', `translate(${state.panX},${state.panY}) scale(${state.zoom})`);
+});
+window.addEventListener('mouseup', () => { isPanning = false; });
+
+// Zoom with wheel
+document.getElementById('canvas-area').addEventListener('wheel', e => {
+  e.preventDefault();
+  if (e.deltaY < 0) zoomIn(); else zoomOut();
+}, { passive: false });
+
+// ── Presets ──────────────────────────────────────────────────────────────
+
+function applyPreset(id) {
+  const preset = PRESETS[id];
+  state.activePreset = id;
+  for (const key of Object.keys(state.layers)) state.layers[key] = preset.layers.includes(key);
+  for (const key of Object.keys(state.conns)) state.conns[key] = preset.conns.includes(key);
+  updateAll();
+}
+
+// ── Comments ────────────────────────────────────────────────────────────
+
+function openModal(nodeId) {
+  state.modalNodeId = nodeId;
+  const node = getNodeById(nodeId);
+  document.getElementById('modal-title').textContent = node.label;
+  document.getElementById('modal-file').textContent = node.subtitle;
+  document.getElementById('modal-input').value = '';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('modal-input').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  state.modalNodeId = null;
+}
+
+function saveComment() {
+  const text = document.getElementById('modal-input').value.trim();
+  if (!text) return;
+  const node = getNodeById(state.modalNodeId);
+  state.comments.push({
+    id: Date.now(),
+    target: node.id,
+    targetLabel: node.label,
+    targetFile: node.subtitle,
+    text,
+  });
+  closeModal();
+  updateAll();
+}
+
+function deleteComment(id) {
+  state.comments = state.comments.filter(c => c.id !== id);
+  updateAll();
+}
+
+function renderComments() {
+  const container = document.getElementById('comments-list');
+  document.getElementById('comment-count').textContent = `(${state.comments.length})`;
+
+  if (state.comments.length === 0) {
+    container.innerHTML = '<div class="no-comments">Cliquer un composant pour commenter</div>';
+    return;
+  }
+
+  container.innerHTML = '';
+  for (const comment of state.comments) {
+    const item = document.createElement('div');
+    item.className = 'comment-item';
+    item.innerHTML = `
+      <div class="comment-target">${comment.targetLabel}</div>
+      <div class="comment-file">${comment.targetFile}</div>
+      <div class="comment-text">${comment.text}</div>
+      <button class="comment-delete" onclick="deleteComment(${comment.id})">&times;</button>
+    `;
+    container.appendChild(item);
+  }
+}
+
+// ── Prompt ───────────────────────────────────────────────────────────────
+
+function updatePrompt() {
+  const el = document.getElementById('prompt-text');
+
+  if (state.comments.length === 0) {
+    el.textContent = 'Aucun commentaire. Cliquer un composant sur le diagramme pour ajouter du feedback.';
+    return;
+  }
+
+  const visibleLayers = Object.entries(state.layers)
+    .filter(([, v]) => v)
+    .map(([k]) => LAYERS[k].label);
+
+  const allVisible = visibleLayers.length === Object.keys(LAYERS).length;
+
+  let prompt = 'Voici l\'architecture du projet Chat UI Showcase';
+  if (!allVisible && visibleLayers.length > 0) {
+    prompt += `, focus sur : ${visibleLayers.join(', ')}`;
+  }
+  prompt += '.\n\nFeedback sur les composants :\n';
+
+  for (const comment of state.comments) {
+    prompt += `\n**${comment.targetLabel}** (${comment.targetFile}) :\n${comment.text}\n`;
+  }
+
+  el.textContent = prompt;
+}
+
+function copyPrompt() {
+  const text = document.getElementById('prompt-text').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copie !';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copier'; btn.classList.remove('copied'); }, 1500);
+  });
+}
+
+// Escape to close modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modal').classList.contains('open')) {
+    if (e.ctrlKey || e.metaKey) saveComment();
+  }
+});
+
+// ── Main update ─────────────────────────────────────────────────────────
+
+function updateAll() {
+  renderPresets();
+  renderLayerFilters();
+  renderConnFilters();
+  renderDiagram();
+  renderComments();
+  updatePrompt();
+}
+
+updateAll();
+</script>
+</body>
+</html>
