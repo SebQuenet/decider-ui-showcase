@@ -25,24 +25,27 @@ import { AlertsExperiment } from './experiments/AlertsExperiment'
 import { CollaborationExperiment } from './experiments/CollaborationExperiment'
 import { SecurityExperiment } from './experiments/SecurityExperiment'
 import { ChainOfThoughtExperiment } from './experiments/ChainOfThoughtExperiment'
+import { MatrixExperiment } from './experiments/MatrixExperiment'
+import { ChartChatExperiment } from './experiments/ChartChatExperiment'
+import { DataStorytellingExperiment } from './experiments/DataStorytellingExperiment'
 import type { TabView } from './types/navigation'
 
 const TABS: TabView[] = [
   // Général
-  { id: 'demo', label: 'Chat Démo', component: DemoChat, group: 'general' },
+  { id: 'chain-of-thought', label: 'Chain of Thought', component: ChainOfThoughtExperiment, group: 'general' },
   { id: 'streaming', label: 'Streaming', component: ChatStreamingExperiment, group: 'general' },
   { id: 'interactions', label: 'Interactions IA', component: InteractionsExperiment, group: 'general' },
   { id: 'composition', label: 'Composition', component: CompositionExperiment, group: 'general' },
-  { id: 'sidebar', label: 'Sidebar', component: SidebarExperiment, group: 'general' },
-  { id: 'models', label: 'Modèles', component: ModelsExperiment, group: 'general' },
-  { id: 'websearch', label: 'Recherche Web', component: WebSearchExperiment, group: 'general' },
-  { id: 'images', label: 'Images', component: ImagesExperiment, group: 'general' },
   { id: 'code', label: 'Code', component: CodeExperiment, group: 'general' },
   { id: 'canvas', label: 'Canvas', component: CanvasExperiment, group: 'general' },
+  { id: 'websearch', label: 'Recherche Web', component: WebSearchExperiment, group: 'general' },
+  { id: 'images', label: 'Images', component: ImagesExperiment, group: 'general' },
+  { id: 'models', label: 'Modèles', component: ModelsExperiment, group: 'general' },
+  { id: 'sidebar', label: 'Sidebar', component: SidebarExperiment, group: 'general' },
   { id: 'home', label: 'Accueil', component: HomeScreenExperiment, group: 'general' },
   { id: 'personalization', label: 'Personnalisation', component: PersonalizationExperiment, group: 'general' },
   { id: 'collaboration', label: 'Collaboration', component: CollaborationExperiment, group: 'general' },
-  { id: 'chain-of-thought', label: 'Chain of Thought', component: ChainOfThoughtExperiment, group: 'general' },
+  { id: 'demo', label: 'Chat Démo', component: DemoChat, group: 'general' },
 
   // Finance
   { id: 'finance-home', label: 'Accueil Finance', component: FinanceHomeExperiment, group: 'finance' },
@@ -56,6 +59,9 @@ const TABS: TabView[] = [
   { id: 'workflows', label: 'Workflows', component: WorkflowsExperiment, group: 'finance' },
 
   // Avancé
+  { id: 'matrix', label: 'Matrix', component: MatrixExperiment, group: 'advanced' },
+  { id: 'chart-chat', label: 'Chat Graphiques', component: ChartChatExperiment, group: 'advanced' },
+  { id: 'data-storytelling', label: 'Data Storytelling', component: DataStorytellingExperiment, group: 'advanced' },
   { id: 'alerts', label: 'Alertes', component: AlertsExperiment, group: 'advanced' },
   { id: 'security', label: 'Sécurité', component: SecurityExperiment, group: 'advanced' },
 ]
