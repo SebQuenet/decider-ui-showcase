@@ -26,6 +26,9 @@ import { CollaborationExperiment } from './experiments/CollaborationExperiment'
 import { SecurityExperiment } from './experiments/SecurityExperiment'
 import { ChainOfThoughtExperiment } from './experiments/ChainOfThoughtExperiment'
 import { RealEstateAttributionExperiment } from './experiments/RealEstateAttributionExperiment'
+import { FixedIncomeAttributionExperiment } from './experiments/FixedIncomeAttributionExperiment'
+import { CreditRiskExperiment } from './experiments/CreditRiskExperiment'
+import { CLOAttributionExperiment } from './experiments/CLOAttributionExperiment'
 import { MatrixExperiment } from './experiments/MatrixExperiment'
 import { ChartChatExperiment } from './experiments/ChartChatExperiment'
 import { DataStorytellingExperiment } from './experiments/DataStorytellingExperiment'
@@ -59,9 +62,14 @@ const TABS: TabView[] = [
   { id: 'datarooms', label: 'Data Rooms', component: DataRoomsExperiment, group: 'finance' },
   { id: 'documents', label: 'Documents', component: DocumentsExperiment, group: 'finance' },
   { id: 'scoring', label: 'Scoring', component: ScoringExperiment, group: 'finance' },
-  { id: 'attribution-immo', label: 'Attribution Immo', component: RealEstateAttributionExperiment, group: 'finance' },
   { id: 'workflows', label: 'Workflows', component: WorkflowsExperiment, group: 'finance' },
   { id: 'alerts', label: 'Alertes', component: AlertsExperiment, group: 'finance' },
+
+  // Attribution — dashboards analytiques de performance et risque
+  { id: 'attribution-immo', label: 'Attribution Immo', component: RealEstateAttributionExperiment, group: 'attribution' },
+  { id: 'attribution-fi', label: 'Attribution FI', component: FixedIncomeAttributionExperiment, group: 'attribution' },
+  { id: 'risque-credit', label: 'Risque Crédit', component: CreditRiskExperiment, group: 'attribution' },
+  { id: 'attribution-clo', label: 'Attribution CLO', component: CLOAttributionExperiment, group: 'attribution' },
 
   // Plateforme — configuration et transverse
   { id: 'home', label: 'Accueil', component: HomeScreenExperiment, group: 'plateforme' },

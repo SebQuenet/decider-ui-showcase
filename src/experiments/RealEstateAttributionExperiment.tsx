@@ -613,7 +613,7 @@ export function RealEstateAttributionExperiment() {
                     ))}
                   </Pie>
                   <Tooltip
-                    formatter={(value: number, name: string) => [`${value}%`, name]}
+                    formatter={(value: any, name: any) => [`${value}%`, name]}
                     contentStyle={{ fontSize: 12, borderRadius: 8 }}
                   />
                   <Legend

@@ -15,13 +15,14 @@ interface TabNavigationProps {
   onTabChange: (tabId: string) => void
 }
 
-const GROUP_ORDER = ['chat', 'contenu', 'analyse', 'finance', 'plateforme']
+const GROUP_ORDER = ['chat', 'contenu', 'analyse', 'finance', 'attribution', 'plateforme']
 
 const GROUP_LABELS: Record<string, string> = {
   chat: 'Chat',
   contenu: 'Contenu',
   analyse: 'Analyse',
   finance: 'Finance',
+  attribution: 'Attribution',
   plateforme: 'Plateforme',
 }
 
