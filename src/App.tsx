@@ -32,6 +32,9 @@ import { CLOAttributionExperiment } from './experiments/CLOAttributionExperiment
 import { MatrixExperiment } from './experiments/MatrixExperiment'
 import { ChartChatExperiment } from './experiments/ChartChatExperiment'
 import { DataStorytellingExperiment } from './experiments/DataStorytellingExperiment'
+import { FundLifecycleExperiment } from './experiments/FundLifecycleExperiment'
+import { FundPerformanceExperiment } from './experiments/FundPerformanceExperiment'
+import { FundAllocationExperiment } from './experiments/FundAllocationExperiment'
 import type { TabView } from './types/navigation'
 
 const TABS: TabView[] = [
@@ -64,6 +67,9 @@ const TABS: TabView[] = [
   { id: 'scoring', label: 'Scoring', component: ScoringExperiment, group: 'finance' },
   { id: 'workflows', label: 'Workflows', component: WorkflowsExperiment, group: 'finance' },
   { id: 'alerts', label: 'Alertes', component: AlertsExperiment, group: 'finance' },
+  { id: 'fund-lifecycle', label: 'Cycle de Vie', component: FundLifecycleExperiment, group: 'finance' },
+  { id: 'fund-performance', label: 'Performance Fonds', component: FundPerformanceExperiment, group: 'finance' },
+  { id: 'fund-allocation', label: 'Allocation', component: FundAllocationExperiment, group: 'finance' },
 
   // Attribution — dashboards analytiques de performance et risque
   { id: 'attribution-immo', label: 'Attribution Immo', component: RealEstateAttributionExperiment, group: 'attribution' },

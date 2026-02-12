@@ -80,3 +80,109 @@ export interface ScorecardItem {
   weight: number
   details: string
 }
+
+// --- Fund Lifecycle ---
+
+export type FundLifecyclePhase =
+  | 'fundraising'
+  | 'investment_period'
+  | 'harvest'
+  | 'extension'
+  | 'liquidation'
+  | 'terminated'
+
+export type FundStrategy =
+  | 'Buyout'
+  | 'Venture Capital'
+  | 'Growth'
+  | 'Real Estate'
+  | 'Infrastructure'
+  | 'Private Debt'
+  | 'Secondaries'
+  | 'Fund of Funds'
+
+export interface FundLifecycle {
+  fundId: string
+  name: string
+  shortName: string
+  phase: FundLifecyclePhase
+  strategy: FundStrategy
+  geography: string
+  currency: string
+  vintageYear: number
+  fundTermYears: number
+  investmentPeriodYears: number
+  committed: number
+  firstCloseDate: string
+  finalCloseDate: string | null
+  investmentPeriodEndDate: string | null
+  expectedTermDate: string
+  actualTermDate: string | null
+  managementFeeRate: number
+  carriedInterestRate: number
+  preferredReturn: number
+  legalStructure: string
+  gpName: string
+}
+
+export type CashFlowType =
+  | 'capital_call'
+  | 'management_fee'
+  | 'fund_expense'
+  | 'return_of_capital'
+  | 'capital_gain'
+  | 'income_distribution'
+  | 'recallable_distribution'
+
+export interface FundCashFlow {
+  id: string
+  fundId: string
+  date: string
+  type: CashFlowType
+  amount: number
+  description: string
+  isEstimate: boolean
+}
+
+export interface FundMetricSnapshot {
+  fundId: string
+  date: string
+  calledAmount: number
+  distributedAmount: number
+  nav: number
+  unfundedCommitment: number
+  tvpiNet: number
+  dpiNet: number
+  rvpiNet: number
+  irrNetInception: number
+}
+
+export type LifecycleEventType =
+  | 'first_close'
+  | 'final_close'
+  | 'capital_call'
+  | 'distribution'
+  | 'exit'
+  | 'investment_period_end'
+  | 'extension'
+  | 'key_person_event'
+  | 'liquidation'
+
+export interface FundLifecycleEvent {
+  id: string
+  fundId: string
+  date: string
+  type: LifecycleEventType
+  label: string
+  description: string
+  amount?: number
+}
+
+export interface AllocationTarget {
+  dimension: 'strategy' | 'geography' | 'vintage'
+  category: string
+  targetPct: number
+  actualPct: number
+  navAmount: number
+  commitmentAmount: number
+}
