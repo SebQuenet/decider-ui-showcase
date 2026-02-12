@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import {
   LineChart, Line, ScatterChart, Scatter, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  ReferenceLine, Cell, ZAxis, Legend,
+  ReferenceLine, Cell, ZAxis,
 } from 'recharts'
 import { TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import { staggerContainerVariants, staggerItemVariants } from '../lib/animations'
@@ -376,7 +376,6 @@ export function FundPerformanceExperiment() {
   )
 
   const metricLabel = selectedMetric === 'tvpi' ? 'TVPI' : selectedMetric === 'dpi' ? 'DPI' : 'IRR (%)'
-  const metricUnit = selectedMetric === 'irr' ? '%' : 'x'
 
   function formatMetricValue(value: number): string {
     if (selectedMetric === 'irr') return `${value.toFixed(1)}%`

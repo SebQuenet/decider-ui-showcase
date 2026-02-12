@@ -450,7 +450,7 @@ function ExpositionTab({
                 paddingAngle={2}
                 dataKey="value"
                 nameKey="name"
-                label={({ name, actualPct }: { name: string; actualPct: number }) => `${name} ${actualPct.toFixed(1)}%`}
+                label={(props: { name?: string; actualPct?: number }) => `${props.name} ${(props.actualPct ?? 0).toFixed(1)}%`}
                 labelLine={{ stroke: 'var(--color-text-muted)', strokeWidth: 1 }}
               >
                 {dimensionPieData.map((_, index) => (
@@ -614,7 +614,7 @@ function PacingTab({
               tick={{ fontSize: 11, fill: 'var(--color-text-muted)' }}
             />
             <Tooltip
-              formatter={(value: number, name: string) => [formatCurrency(value, 'EUR', { compact: true }), name]}
+              formatter={(value?: number | string, name?: string) => [formatCurrency(Number(value ?? 0), 'EUR', { compact: true }), name ?? '']}
               contentStyle={{
                 backgroundColor: 'var(--color-surface)',
                 border: '1px solid var(--color-border)',

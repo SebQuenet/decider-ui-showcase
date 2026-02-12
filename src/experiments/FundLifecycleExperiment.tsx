@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  ComposedChart, BarChart, Bar, AreaChart, Area, Line,
+  ComposedChart, Bar, AreaChart, Area, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  ReferenceLine, Cell,
+  ReferenceLine,
 } from 'recharts'
 import {
   Calendar, DollarSign, TrendingUp, ArrowDownCircle, ArrowUpCircle,
@@ -14,11 +14,10 @@ import { staggerContainerVariants, staggerItemVariants, smoothTransition } from 
 import { Tabs } from '../components/ui/Tabs'
 import { Badge } from '../components/ui/Badge'
 import { Chip } from '../components/ui/Chip'
-import { formatCurrency, formatPercentage, formatDate } from '../lib/formatters'
+import { formatCurrency, formatDate } from '../lib/formatters'
 import {
   mockFundLifecycles,
   mockCashFlows,
-  mockMetricSnapshots,
   mockLifecycleEvents,
   getLatestSnapshot,
   getPhaseLabel,
