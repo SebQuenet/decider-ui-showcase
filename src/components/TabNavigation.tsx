@@ -15,23 +15,27 @@ interface TabNavigationProps {
   onTabChange: (tabId: string) => void
 }
 
+const GROUP_ORDER = ['chat', 'contenu', 'analyse', 'finance', 'plateforme']
+
+const GROUP_LABELS: Record<string, string> = {
+  chat: 'Chat',
+  contenu: 'Contenu',
+  analyse: 'Analyse',
+  finance: 'Finance',
+  plateforme: 'Plateforme',
+}
+
 function groupTabs(tabs: TabView[]): TabGroup[] {
-  const groups: Record<string, TabView[]> = { general: [], finance: [], advanced: [] }
+  const groups: Record<string, TabView[]> = {}
   for (const tab of tabs) {
-    const group = tab.group || 'general'
+    const group = tab.group || 'chat'
     if (!groups[group]) groups[group] = []
     groups[group].push(tab)
   }
 
-  const labels: Record<string, string> = {
-    general: 'Général',
-    finance: 'Finance',
-    advanced: 'Avancé',
-  }
-
-  return Object.entries(groups)
-    .filter(([, tabs]) => tabs.length > 0)
-    .map(([id, tabs]) => ({ id, label: labels[id] || id, tabs }))
+  return GROUP_ORDER
+    .filter((id) => groups[id]?.length > 0)
+    .map((id) => ({ id, label: GROUP_LABELS[id] || id, tabs: groups[id] }))
 }
 
 export function TabNavigation({ tabs, activeTabId, onTabChange }: TabNavigationProps) {

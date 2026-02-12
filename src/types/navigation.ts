@@ -2,7 +2,7 @@ export interface TabView {
   id: string
   label: string
   component: React.ComponentType
-  group: 'general' | 'finance' | 'advanced'
+  group: 'chat' | 'contenu' | 'analyse' | 'finance' | 'plateforme'
 }
 
 export interface TabGroup {

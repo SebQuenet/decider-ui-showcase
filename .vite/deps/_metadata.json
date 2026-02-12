@@ -7,37 +7,37 @@
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/.pnpm/react@19.2.4/node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "161fa100",
+      "fileHash": "51c6d0ab",
       "needsInterop": true
     },
     "react": {
       "src": "../../node_modules/.pnpm/react@19.2.4/node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "f82b0b36",
+      "fileHash": "b2998279",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/.pnpm/react-dom@19.2.4_react@19.2.4/node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "e0a20ba9",
+      "fileHash": "f7cc677e",
       "needsInterop": true
     },
     "framer-motion": {
       "src": "../../node_modules/.pnpm/framer-motion@12.34.0_react-dom@19.2.4_react@19.2.4__react@19.2.4/node_modules/framer-motion/dist/es/index.mjs",
       "file": "framer-motion.js",
-      "fileHash": "d9e8525b",
+      "fileHash": "15c65928",
       "needsInterop": false
     },
     "lucide-react": {
       "src": "../../node_modules/.pnpm/lucide-react@0.563.0_react@19.2.4/node_modules/lucide-react/dist/esm/lucide-react.js",
       "file": "lucide-react.js",
-      "fileHash": "1950aff0",
+      "fileHash": "b66bb1d8",
       "needsInterop": false
     },
     "recharts": {
       "src": "../../node_modules/.pnpm/recharts@3.7.0_@types+react@19.2.14_react-dom@19.2.4_react@19.2.4__react-is@19.2.4_react@19.2.4_redux@5.0.1/node_modules/recharts/es6/index.js",
       "file": "recharts.js",
-      "fileHash": "239d4a16",
+      "fileHash": "31739bd1",
       "needsInterop": false
     }
   },

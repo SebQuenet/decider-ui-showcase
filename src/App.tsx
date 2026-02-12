@@ -25,45 +25,51 @@ import { AlertsExperiment } from './experiments/AlertsExperiment'
 import { CollaborationExperiment } from './experiments/CollaborationExperiment'
 import { SecurityExperiment } from './experiments/SecurityExperiment'
 import { ChainOfThoughtExperiment } from './experiments/ChainOfThoughtExperiment'
+import { RealEstateAttributionExperiment } from './experiments/RealEstateAttributionExperiment'
 import { MatrixExperiment } from './experiments/MatrixExperiment'
 import { ChartChatExperiment } from './experiments/ChartChatExperiment'
 import { DataStorytellingExperiment } from './experiments/DataStorytellingExperiment'
 import type { TabView } from './types/navigation'
 
 const TABS: TabView[] = [
-  // Général
-  { id: 'chain-of-thought', label: 'Chain of Thought', component: ChainOfThoughtExperiment, group: 'general' },
-  { id: 'streaming', label: 'Streaming', component: ChatStreamingExperiment, group: 'general' },
-  { id: 'interactions', label: 'Interactions IA', component: InteractionsExperiment, group: 'general' },
-  { id: 'composition', label: 'Composition', component: CompositionExperiment, group: 'general' },
-  { id: 'code', label: 'Code', component: CodeExperiment, group: 'general' },
-  { id: 'canvas', label: 'Canvas', component: CanvasExperiment, group: 'general' },
-  { id: 'websearch', label: 'Recherche Web', component: WebSearchExperiment, group: 'general' },
-  { id: 'images', label: 'Images', component: ImagesExperiment, group: 'general' },
-  { id: 'models', label: 'Modèles', component: ModelsExperiment, group: 'general' },
-  { id: 'sidebar', label: 'Sidebar', component: SidebarExperiment, group: 'general' },
-  { id: 'home', label: 'Accueil', component: HomeScreenExperiment, group: 'general' },
-  { id: 'personalization', label: 'Personnalisation', component: PersonalizationExperiment, group: 'general' },
-  { id: 'collaboration', label: 'Collaboration', component: CollaborationExperiment, group: 'general' },
-  { id: 'demo', label: 'Chat Démo', component: DemoChat, group: 'general' },
+  // Chat — l'expérience conversationnelle core
+  { id: 'chain-of-thought', label: 'Chain of Thought', component: ChainOfThoughtExperiment, group: 'chat' },
+  { id: 'streaming', label: 'Streaming', component: ChatStreamingExperiment, group: 'chat' },
+  { id: 'interactions', label: 'Interactions IA', component: InteractionsExperiment, group: 'chat' },
+  { id: 'composition', label: 'Composition', component: CompositionExperiment, group: 'chat' },
+  { id: 'demo', label: 'Chat Démo', component: DemoChat, group: 'chat' },
 
-  // Finance
+  // Contenu — artifacts et création
+  { id: 'code', label: 'Code', component: CodeExperiment, group: 'contenu' },
+  { id: 'canvas', label: 'Canvas', component: CanvasExperiment, group: 'contenu' },
+  { id: 'websearch', label: 'Recherche Web', component: WebSearchExperiment, group: 'contenu' },
+  { id: 'images', label: 'Images', component: ImagesExperiment, group: 'contenu' },
+
+  // Analyse — données et intelligence analytique
+  { id: 'matrix', label: 'Matrix', component: MatrixExperiment, group: 'analyse' },
+  { id: 'chart-chat', label: 'Chat Graphiques', component: ChartChatExperiment, group: 'analyse' },
+  { id: 'data-storytelling', label: 'Data Storytelling', component: DataStorytellingExperiment, group: 'analyse' },
+  { id: 'dataviz', label: 'Dataviz', component: DatavizExperiment, group: 'analyse' },
+  { id: 'interrogation', label: 'Interrogation', component: InterrogationExperiment, group: 'analyse' },
+  { id: 'comparison', label: 'Comparaison', component: ComparisonExperiment, group: 'analyse' },
+  { id: 'contradictions', label: 'Contradictions', component: ContradictionsExperiment, group: 'analyse' },
+
+  // Finance — métier PE/AM
   { id: 'finance-home', label: 'Accueil Finance', component: FinanceHomeExperiment, group: 'finance' },
   { id: 'datarooms', label: 'Data Rooms', component: DataRoomsExperiment, group: 'finance' },
-  { id: 'interrogation', label: 'Interrogation', component: InterrogationExperiment, group: 'finance' },
-  { id: 'comparison', label: 'Comparaison', component: ComparisonExperiment, group: 'finance' },
-  { id: 'dataviz', label: 'Dataviz', component: DatavizExperiment, group: 'finance' },
-  { id: 'contradictions', label: 'Contradictions', component: ContradictionsExperiment, group: 'finance' },
   { id: 'documents', label: 'Documents', component: DocumentsExperiment, group: 'finance' },
   { id: 'scoring', label: 'Scoring', component: ScoringExperiment, group: 'finance' },
+  { id: 'attribution-immo', label: 'Attribution Immo', component: RealEstateAttributionExperiment, group: 'finance' },
   { id: 'workflows', label: 'Workflows', component: WorkflowsExperiment, group: 'finance' },
+  { id: 'alerts', label: 'Alertes', component: AlertsExperiment, group: 'finance' },
 
-  // Avancé
-  { id: 'matrix', label: 'Matrix', component: MatrixExperiment, group: 'advanced' },
-  { id: 'chart-chat', label: 'Chat Graphiques', component: ChartChatExperiment, group: 'advanced' },
-  { id: 'data-storytelling', label: 'Data Storytelling', component: DataStorytellingExperiment, group: 'advanced' },
-  { id: 'alerts', label: 'Alertes', component: AlertsExperiment, group: 'advanced' },
-  { id: 'security', label: 'Sécurité', component: SecurityExperiment, group: 'advanced' },
+  // Plateforme — configuration et transverse
+  { id: 'home', label: 'Accueil', component: HomeScreenExperiment, group: 'plateforme' },
+  { id: 'sidebar', label: 'Sidebar', component: SidebarExperiment, group: 'plateforme' },
+  { id: 'models', label: 'Modèles', component: ModelsExperiment, group: 'plateforme' },
+  { id: 'personalization', label: 'Personnalisation', component: PersonalizationExperiment, group: 'plateforme' },
+  { id: 'collaboration', label: 'Collaboration', component: CollaborationExperiment, group: 'plateforme' },
+  { id: 'security', label: 'Sécurité', component: SecurityExperiment, group: 'plateforme' },
 ]
 
 export default function App() {
